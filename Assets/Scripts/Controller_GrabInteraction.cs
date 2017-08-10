@@ -13,6 +13,7 @@ public class Controller_GrabInteraction : MonoBehaviour {
 	List<GameObject> interactableItems = new List<GameObject>();
 
 	private bool isInteracting = false;
+	private bool currentlyHolding = false;
 	private GameObject interObj;
 	private GameObject cldObj;
 
@@ -28,45 +29,79 @@ public class Controller_GrabInteraction : MonoBehaviour {
 	{
 		var device = SteamVR_Controller.Input((int)trackedObj.index);
 
-		if (joint == null && interactableItems.Count != 0 && device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
+		if (!currentlyHolding && interactableItems.Count != 0 && device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
 		{
 			interObj = interactableItems [0];
 
-			//set orig position
-			oldPosition = interObj.transform.position;
-			oldRotation = interObj.transform.rotation;
+			InteractableObj intObjScript = interObj.GetComponentInParent<InteractableObj> ();
 
-			//snaps to controller attachPoint
-			interObj.transform.position = attachPoint.transform.position;
-
-			joint = interObj.AddComponent<FixedJoint>();
-			joint.connectedBody = attachPoint;
-		}
-		else if (joint != null && device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))
-		{
-			var rgbd = interObj.GetComponent<Rigidbody>();
-			Object.DestroyImmediate(joint);
-			joint = null;
-
-			//snap back to orig position
-			interObj.transform.position = oldPosition;
-			interObj.transform.rotation = oldRotation;
-
-
-			//stuff for throwing and momentum
-			/*var origin = trackedObj.origin ? trackedObj.origin : trackedObj.transform.parent;
-			if (origin != null)
-			{
-				rgbd.velocity = origin.TransformVector(device.velocity);
-				rgbd.angularVelocity = origin.TransformVector(device.angularVelocity);
+			if (intObjScript.returnOnDrop){
+				//set orig position
+				oldPosition = interObj.transform.position;
+				oldRotation = interObj.transform.rotation;
 			}
-			else
-			{
-				rgbd.velocity = device.velocity;
-				rgbd.angularVelocity = device.angularVelocity;
-			}*/
 
-			//rgbd.maxAngularVelocity = rgbd.angularVelocity.magnitude;
+
+			//snaps pos to controller attachPoint
+			if (intObjScript.snapPosToAttach) {
+				interObj.transform.position = attachPoint.transform.position;
+			}
+
+			//snaps rot to controller attachPoint
+			if (intObjScript.snapRotToAttach) {
+				interObj.transform.rotation = attachPoint.transform.rotation;
+			}
+
+			if (intObjScript.grabType == GrabTypeDropList.Parent) {
+				//parent attach mode
+				interObj.transform.parent = attachPoint.transform;
+				currentlyHolding = true;
+			}
+
+			if (intObjScript.grabType == GrabTypeDropList.FixedJoint) {
+				//fixedJoint attach mode
+				joint = interObj.AddComponent<FixedJoint> ();
+				joint.connectedBody = attachPoint;
+				currentlyHolding = true;
+			}
+		}
+		else if (currentlyHolding && device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))
+		{
+			InteractableObj intObjScript = interObj.GetComponentInParent<InteractableObj> ();
+			var rgbd = interObj.GetComponent<Rigidbody>();
+			
+			if (intObjScript.grabType == GrabTypeDropList.Parent){
+				//parent detach mode
+				interObj.transform.parent = null;
+				currentlyHolding = false;
+			}
+
+			if (intObjScript.grabType == GrabTypeDropList.FixedJoint){
+				//fixedJoint detach mode
+				Object.DestroyImmediate(joint);
+				joint = null;
+				currentlyHolding = false;
+			}	
+			
+			if (intObjScript.isThrowable) {
+				//stuff for throwing and momentum
+				var origin = trackedObj.origin ? trackedObj.origin : trackedObj.transform.parent;
+				if (origin != null) {
+					rgbd.velocity = origin.TransformVector (device.velocity);
+					rgbd.angularVelocity = origin.TransformVector (device.angularVelocity);
+				} else {
+					rgbd.velocity = device.velocity;
+					rgbd.angularVelocity = device.angularVelocity;
+				}
+				rgbd.maxAngularVelocity = rgbd.angularVelocity.magnitude;
+			}
+
+			if (intObjScript.returnOnDrop && !intObjScript.isThrowable){
+				//snap back to orig position
+				//Debug.Log ("returning "+interObj.name+" to original pos");
+				interObj.transform.position = oldPosition;
+				interObj.transform.rotation = oldRotation;
+			}
 		}
 
 	}
@@ -84,10 +119,12 @@ public class Controller_GrabInteraction : MonoBehaviour {
 
 	void OnTriggerExit(Collider collider){
 		//Debug.Log ("I hit something");
-		InteractableObj intObj = collider.GetComponentInParent<InteractableObj>();
-		if (interactableItems.Contains (intObj.gameObject)){
-			//Debug.Log ("I'm no longer interacting");
-			interactableItems.Remove (intObj.gameObject);
+		if (collider.GetComponentInParent<InteractableObj> () != null) {
+			InteractableObj intObj = collider.GetComponentInParent<InteractableObj> ();
+			if (interactableItems.Contains (intObj.gameObject)) {
+				//Debug.Log ("I'm no longer interacting");
+				interactableItems.Remove (intObj.gameObject);
+			}
 		}
 
 	}
