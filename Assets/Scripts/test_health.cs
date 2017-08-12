@@ -15,11 +15,11 @@ public class test_health : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown("k"))
         {
-            health.damage(20);
+            health.Damage(20);
         }
         if (Input.GetKeyDown("h"))
         {
-            health.heal(10);
+            health.Heal(10);
         }
     }
 }
