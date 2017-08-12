@@ -9,11 +9,17 @@ public class MoveBehavior : MonoBehaviour {
 		Idle
 	}
 
+	public float speed = 6.0F;
+	public float jumpSpeed = 8.0F;
+	public float gravity = 20.0F;
+	private Vector3 moveDirection = Vector3.zero;
+
 	State state = State.Idle;
+	CharacterController controller;
 
 	// Use this for initialization
 	void Start () {
-		
+		controller = GetComponent<CharacterController>();
 	}
 	
 	// Update is called once per frame
@@ -29,7 +35,9 @@ public class MoveBehavior : MonoBehaviour {
 
 	public void Move()
 	{
-		Debug.Log("Character can Move!");
+		if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0){
+			controller.Move(transform.forward * speed * Time.deltaTime);
+		}
 	}
 
 	public void ChangeState(State newState){
