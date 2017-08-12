@@ -13,12 +13,12 @@ public class DragonManager : MonoBehaviour {
 	public GameObject bodyHealthManagerObject;
 	public GameObject headHealthManagerObject;
 	public float proneTimeout; // Time between when dragon becomes prone and then active again
+	public State state  = State.Active;
 
 	HealthManager bodyHealthManager;
 	HealthManager headHealthManager;
 	FireBehavior fireBehavior;
 	StringBreakBehavior stringBreakBehavior;
-	State state  = State.Active;
 
 	// Use this for initialization
 	void Start () {
