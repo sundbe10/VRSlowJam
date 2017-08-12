@@ -12,7 +12,7 @@ public class HealthManager : MonoBehaviour {
         currentHealth = maxHealth;
     }
 
-    public void damage(int amount)
+    public void Damage(int amount)
     {
         currentHealth -= amount;
         if (currentHealth < 0)
@@ -21,7 +21,7 @@ public class HealthManager : MonoBehaviour {
         }
     }
 
-    public void heal(int amount)
+    public void Heal(int amount)
     {
         currentHealth += amount;
         if (currentHealth > maxHealth)
