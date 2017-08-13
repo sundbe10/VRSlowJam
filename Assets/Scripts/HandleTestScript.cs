@@ -16,7 +16,7 @@ public class HandleTestScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		var vertical = Input.GetAxis("Vertical");
+		/*var vertical = Input.GetAxis("Vertical");
 		var horizontal = Input.GetAxis("Horizontal");
 		var forward = Input.GetAxis("Vertical2");
 		var rotate = Input.GetAxis("Rotate");
@@ -31,8 +31,8 @@ public class HandleTestScript : MonoBehaviour {
 		}
 		if(rotate != 0){
 			transform.Rotate(0, rotateSpeed*Time.deltaTime*rotate,0);
-		}
-
+		}*/
+		transform.Rotate(Vector3.up * 2);
 
 			
 	}

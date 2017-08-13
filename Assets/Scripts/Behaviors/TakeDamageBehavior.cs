@@ -5,6 +5,7 @@ using UnityEngine;
 public class TakeDamageBehavior : MonoBehaviour {
 
 	public GameObject healthManagerObject;
+	public bool tookDamage = false;
 
 	HealthManager healthManager;
 	ParticleSystem particleSystem;
@@ -18,6 +19,10 @@ public class TakeDamageBehavior : MonoBehaviour {
 		}
 	}
 
+	void Update(){
+		tookDamage = false;
+	}
+
 	void OnCollisionEnter(Collision collision){
 		TestDamage(collision.collider);
 	}
@@ -29,8 +34,6 @@ public class TakeDamageBehavior : MonoBehaviour {
 	void TestDamage(Collider collider){
         if (collider.tag != gameObject.tag)
         {
-			Debug.Log(gameObject);
-			Debug.Log(collider);
             var damageScript = collider.GetComponent<ApplyDamageBehavior>();
 			if (damageScript != null && damageScript.enabled == true)
             {
@@ -38,6 +41,8 @@ public class TakeDamageBehavior : MonoBehaviour {
 				if(particleSystem != null){
 					particleSystem.Emit(20);
 				}
+				Debug.Log("Damage");
+				tookDamage = true;
             }
         }
 	}

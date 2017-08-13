@@ -15,11 +15,13 @@ public class AttackBehavior : MonoBehaviour {
 
     State state;
 	ApplyDamageBehavior applyDamageBehavior;
+	Animator animator;
 
     // Use this for initialization
     void Start () {
 		collider = GetComponent<SphereCollider>();
 		applyDamageBehavior = GetComponent<ApplyDamageBehavior>();
+		animator = GetComponent<Animator>();
 		ChangeState(State.NotAttacking);
 	}
 	
@@ -34,26 +36,34 @@ public class AttackBehavior : MonoBehaviour {
         switch (state)
         {
             case State.Attacking:
-                attack();
+				Attack();
                 break;
             case State.NotAttacking:
-                stopAttack();
+                StopAttack();
                 break;
         }
     }
 
-    public void attack()
-    {
-        Debug.Log("attacking");
-        collider.enabled = true;
-		applyDamageBehavior.enabled = true;
-        return;
-    }
+	// Animation Event
+	public void UpdateAttackStatus(int status){
+		if(status == 1){
+			collider.enabled = true;
+			applyDamageBehavior.enabled = true;
+		}else{
+			collider.enabled = false;
+			applyDamageBehavior.enabled = false;
+		}
+	}
 
-    public void stopAttack()
+	void Attack()
     {
-        Debug.Log("not attacking");
-        collider.enabled = false;
+		animator.SetInteger("Attack",1);
+	}
+
+    void StopAttack()
+    {
+		animator.SetInteger("Attack",0);
+		collider.enabled = false;
 		applyDamageBehavior.enabled = false;
 		return;
     }
