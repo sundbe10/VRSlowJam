@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HealthUIManager : MonoBehaviour {
 
+    public float max;
     private HealthManager health;
 
     // Use this for initialization
@@ -18,7 +19,7 @@ public class HealthUIManager : MonoBehaviour {
         transform.LookAt(Camera.main.transform.position, -Vector3.up);
 
         //connects health bar width to current health left
-        float healthLeftWidth = ((float)health.currentHealth / (float)health.maxHealth) * 2;
+        float healthLeftWidth = ((float)health.currentHealth / (float)health.maxHealth) * max;
         transform.localScale = new Vector3(healthLeftWidth, 0.2f, 1);
 	}
     
