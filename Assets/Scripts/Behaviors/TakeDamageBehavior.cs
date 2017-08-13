@@ -25,9 +25,14 @@ public class TakeDamageBehavior : MonoBehaviour {
 	}
 
 	void TestDamage(Collider collider){
-		var damageScript = collider.GetComponent<ApplyDamageBehavior>();
-		if(damageScript != null){
-			healthManager.Damage(damageScript.damage);
-		}
+        if (collider.tag != gameObject.tag)
+        {
+            var damageScript = collider.GetComponent<ApplyDamageBehavior>();
+            if (damageScript != null)
+            {
+                healthManager.Damage(damageScript.damage);
+
+            }
+        }
 	}
 }
