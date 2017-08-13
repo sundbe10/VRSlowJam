@@ -7,10 +7,12 @@ public class TakeDamageBehavior : MonoBehaviour {
 	public GameObject healthManagerObject;
 
 	HealthManager healthManager;
+	ParticleSystem particleSystem;
 
 	// Use this for initialization
 	void Start () {
 		healthManager = healthManagerObject.GetComponent<HealthManager>();
+		particleSystem = GetComponent<ParticleSystem>();
 		if(healthManager == null){
 			Debug.LogError("Health manager was not found on gameObject!");
 		}
@@ -31,7 +33,9 @@ public class TakeDamageBehavior : MonoBehaviour {
             if (damageScript != null)
             {
                 healthManager.Damage(damageScript.damage);
-
+				if(particleSystem != null){
+					particleSystem.Emit(20);
+				}
             }
         }
 	}
