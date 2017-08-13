@@ -21,12 +21,14 @@ public class MoveBehavior : MonoBehaviour {
 	CharacterController controller;
 	Rigidbody rigidBody;
 	Animator animator;
+	KnightInputManager inputManager;
 
 	// Use this for initialization
 	void Start () {
 		controller = GetComponent<CharacterController>();
 		rigidBody = GetComponent<Rigidbody>();
 		animator = GetComponent<Animator>();
+		inputManager = GetComponent<KnightInputManager>();
 	}
 	
 	// Update is called once per frame
@@ -102,6 +104,6 @@ public class MoveBehavior : MonoBehaviour {
 	}
 
 	Vector3 GetControllerDirection(){
-		return new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+		return new Vector3(Input.GetAxis(inputManager.horizontal), 0, Input.GetAxis(inputManager.vertical));
 	}
 }

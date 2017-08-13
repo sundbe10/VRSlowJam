@@ -15,21 +15,24 @@ public class FireBehavior : MonoBehaviour {
 	public GameObject smokeObject;
 	public int fireTime = 2;
 	public int fireRefreshTime = 3;
+	public GameObject flameObject;
 
 	State state;
 	ParticleSystem fireParticleSystem;
 	ParticleSystem smokeParticleSystem;
+	DragonInputManager inputManager;
 
 	// Use this for initialization
 	void Start () {
 		fireParticleSystem = fireObject.GetComponent<ParticleSystem>();
 		smokeParticleSystem = smokeObject.GetComponent<ParticleSystem>();
+		inputManager = GetComponent<DragonInputManager>();
 		ChangeState(State.Active);
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetButtonDown("Jump")){
+		if(Input.GetButtonDown(inputManager.fire)){
 			if(state == State.Active){
 				ChangeState(State.Fire);
 			}
@@ -59,13 +62,20 @@ public class FireBehavior : MonoBehaviour {
 	}
 
 	IEnumerator FireTimeout(){
+		Debug.Log("launch");
+		InvokeRepeating("LaunchFlame", 0, 0.1f);
 		yield return new WaitForSeconds(fireTime);
+		CancelInvoke();
 		ChangeState(State.Smoke);
 	}
 
 	IEnumerator FireRefreshTimeout(){
 		yield return new WaitForSeconds(fireRefreshTime);
 		ChangeState(State.Active);
+	}
+
+	void LaunchFlame(){
+		var flame = Instantiate(flameObject, fireObject.transform.position, fireObject.transform.rotation);
 	}
 
 }

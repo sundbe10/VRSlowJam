@@ -12,8 +12,8 @@ public class JumpBehavior : MonoBehaviour {
 
 	public float gravity = -9.81f;
 	public float jumpForce = 100f;
+	public State state;
 
-	State state;
 	Animator animator;
 	Rigidbody rigidbody;
 

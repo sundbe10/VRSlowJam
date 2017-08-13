@@ -24,6 +24,7 @@ public class KnightManager : MonoBehaviour {
 	JumpBehavior jumpBehavior;
 	TakeDamageBehavior takeDamageBehavior;
 	HealthManager healthManager;
+	KnightInputManager inputManager;
 
 	void Awake ()
 	{
@@ -31,6 +32,7 @@ public class KnightManager : MonoBehaviour {
 		GameManager.onGameStartEvent += EnablePlayer;
         animator = gameObject.GetComponent<Animator>();
 		healthManager = GetComponent<HealthManager>();
+		inputManager = GetComponent<KnightInputManager>();
 
 		// Get Behaviors
 		moveBehavior = GetComponent<MoveBehavior>();
@@ -66,6 +68,9 @@ public class KnightManager : MonoBehaviour {
 				DetectDamage();
 				if(IsGrounded()) ChangeState(State.Active);
 				break;
+			case State.Hit:
+				DetectHitInAir();
+				break;
 			}
 
 			if(healthManager.currentHealth <= 0){
@@ -82,7 +87,7 @@ public class KnightManager : MonoBehaviour {
 
     void DetectAttack()
     {
-		if(Input.GetButtonDown("Fire1")){
+		if(Input.GetButtonDown(inputManager.attack)){
 			ChangeState(State.Attack);
 			attackBehavior.ChangeState(AttackBehavior.State.Attacking);
 		}
@@ -95,9 +100,15 @@ public class KnightManager : MonoBehaviour {
 	}
 
 	void DetectJump(){
-		if(Input.GetButtonDown("Jump")){
+		if(Input.GetButtonDown(inputManager.jump)){
 			ChangeState(State.Jump);
-			jumpBehavior.ChangeState(JumpBehavior.State.Jumping);
+		}
+	}
+
+	void DetectHitInAir(){
+		// Double check for falling hit to turn bacl to active state
+		if(jumpBehavior.state != JumpBehavior.State.Grounded && IsGrounded()){
+			ChangeState(State.Active);
 		}
 	}
 
@@ -142,6 +153,7 @@ public class KnightManager : MonoBehaviour {
             break;
 		case State.Jump:
 			moveBehavior.ChangeState(MoveBehavior.State.Jump);
+			jumpBehavior.ChangeState(JumpBehavior.State.Jumping);
 			break;
 		case State.Hit:
 			moveBehavior.ChangeState(MoveBehavior.State.Idle);
@@ -150,6 +162,8 @@ public class KnightManager : MonoBehaviour {
 			break;
 	    case State.Dead: 
 		    moveBehavior.ChangeState(MoveBehavior.State.Idle);
+			attackBehavior.ChangeState(AttackBehavior.State.NotAttacking);
+			jumpBehavior.ChangeState(JumpBehavior.State.Grounded);
 			Die();
 		    break;
 	    case State.Celebrate: 
@@ -167,10 +181,17 @@ public class KnightManager : MonoBehaviour {
 	/*----- Animation Event Functions -----*/
 
 	public void AttackEnded(){
-		ChangeState(State.Active);
+		if(IsGrounded()){
+			ChangeState(State.Active);
+		}
+		else{
+			ChangeState(State.Jump);
+		}
 	}
 
 	public void LightHitEnded(){
-		ChangeState(State.Active);
+		if(IsGrounded()){
+			ChangeState(State.Active);
+		}
 	}
 }
