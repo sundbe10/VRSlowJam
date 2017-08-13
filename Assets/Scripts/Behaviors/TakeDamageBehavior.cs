@@ -29,8 +29,10 @@ public class TakeDamageBehavior : MonoBehaviour {
 	void TestDamage(Collider collider){
         if (collider.tag != gameObject.tag)
         {
+			Debug.Log(gameObject);
+			Debug.Log(collider);
             var damageScript = collider.GetComponent<ApplyDamageBehavior>();
-            if (damageScript != null)
+			if (damageScript != null && damageScript.enabled == true)
             {
                 healthManager.Damage(damageScript.damage);
 				if(particleSystem != null){

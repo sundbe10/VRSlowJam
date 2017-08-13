@@ -36,7 +36,6 @@ public class MoveBehavior : MonoBehaviour {
 	public void Move()
 	{
 		if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0){
-			Debug.Log("test");
 			controller.Move(transform.forward * speed * Time.deltaTime);
 		}
 	}
