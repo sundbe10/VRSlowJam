@@ -10,7 +10,7 @@ public class HealthUIManager : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        health = GetComponent<HealthManager>();
+        health = transform.parent.GetComponent<HealthManager>();
     }
 
     // Update is called once per frame

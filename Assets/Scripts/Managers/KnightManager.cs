@@ -19,6 +19,7 @@ public class KnightManager : MonoBehaviour {
 	State state = State.Idle;
 	MoveBehavior moveBehavior;
     AttackBehavior attackBehavior;
+    BlockBehavior blockBehavior;
 
 	void Awake ()
 	{
@@ -29,6 +30,7 @@ public class KnightManager : MonoBehaviour {
 		// Get Behaviors
 		moveBehavior = GetComponent<MoveBehavior>();
         attackBehavior = GetComponent<AttackBehavior>();
+        blockBehavior = GetComponent<BlockBehavior>();
 	}
 
 	void Start()
@@ -40,6 +42,7 @@ public class KnightManager : MonoBehaviour {
 	void Update ()
 	{
         detectAttack();
+        detectBlock();
     }
 
 	void EnablePlayer()
@@ -54,8 +57,20 @@ public class KnightManager : MonoBehaviour {
         {
             ChangeState(State.Attack);   
         }
-        else if (state == State.Attack && 
-            !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
+        else if (state == State.Attack)
+        {
+            ChangeState(State.Active);
+        }
+    }
+
+    void detectBlock()
+    {
+        //simplifyed for testing: replace me!
+        if (Input.GetButton("Block"))
+        {
+            ChangeState(State.Block);
+        }
+        else if (state == State.Block)
         {
             ChangeState(State.Active);
         }
@@ -71,15 +86,18 @@ public class KnightManager : MonoBehaviour {
 		    case State.Active:
 			    moveBehavior.ChangeState(MoveBehavior.State.Active);
                 attackBehavior.ChangeState(AttackBehavior.State.NotAttacking);
-                Debug.Log("state: Active");
+                blockBehavior.ChangeState(BlockBehavior.State.NotBlocking);
+                Debug.Log("State: Active");
                 break;
             case State.Block:
+                blockBehavior.ChangeState(BlockBehavior.State.Blocking);
                 moveBehavior.ChangeState(MoveBehavior.State.Idle);
+                Debug.Log("State: Block");
                 break;
             case State.Attack:
                 moveBehavior.ChangeState(MoveBehavior.State.Idle);
                 attackBehavior.ChangeState(AttackBehavior.State.Attacking);
-                Debug.Log("state: Attack");
+                Debug.Log("State: Attack");
                 break;
 		    case State.Dead: 
 			    moveBehavior.ChangeState(MoveBehavior.State.Idle);

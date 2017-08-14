@@ -31,7 +31,6 @@ public class TakeDamageBehavior : MonoBehaviour {
             if (damageScript != null)
             {
                 healthManager.Damage(damageScript.damage);
-
             }
         }
 	}
