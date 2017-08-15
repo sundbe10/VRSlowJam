@@ -7,6 +7,7 @@ public class KnightInputManager : MonoBehaviour {
 	public string horizontal;
 	public string vertical;
 	public string attack;
+    public string block;
 	public string jump;
 
 	// Use this for initialization

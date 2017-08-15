@@ -12,15 +12,18 @@ public class BlockBehavior : MonoBehaviour {
     public int shieldStranght = 100;
 
     private Rigidbody rb;
-    private TakeDamageBehavior takeDamageBehavior;
+
     //private new HealthManager shield;
     State state = State.NotBlocking;
+    TakeDamageBehavior takeDamageBehavior;
+    Animator animator;
 
     // Use this for initialization
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
         takeDamageBehavior = gameObject.GetComponent<TakeDamageBehavior>();
+        animator = GetComponent<Animator>();
         //shield.maxHealth = shieldStranght;
     }
 
@@ -53,6 +56,7 @@ public class BlockBehavior : MonoBehaviour {
     public void block()
     {
         Debug.Log("blocking");
+        animator.SetInteger("Block",1);
         rb.isKinematic = true;
         takeDamageBehavior.enabled = false;
         return;
