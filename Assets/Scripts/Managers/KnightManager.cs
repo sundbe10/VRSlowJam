@@ -25,6 +25,7 @@ public class KnightManager : MonoBehaviour {
 	TakeDamageBehavior takeDamageBehavior;
 	HealthManager healthManager;
 	KnightInputManager inputManager;
+	SoundManager soundManager;
 
 	void Awake ()
 	{
@@ -33,6 +34,7 @@ public class KnightManager : MonoBehaviour {
         animator = gameObject.GetComponent<Animator>();
 		healthManager = GetComponent<HealthManager>();
 		inputManager = GetComponent<KnightInputManager>();
+		soundManager = GetComponent<SoundManager>();
 
 		// Get Behaviors
 		moveBehavior = GetComponent<MoveBehavior>();
@@ -75,9 +77,14 @@ public class KnightManager : MonoBehaviour {
 
 			if(healthManager.currentHealth <= 0){
 				ChangeState(State.Dead);
+				soundManager.PlaySound("die");
 			}
 		}
     }
+
+	public void PlayFootstep(){
+		soundManager.PlaySound("footstep");
+	}
 
 	void EnablePlayer()
 	{
@@ -102,6 +109,7 @@ public class KnightManager : MonoBehaviour {
 	void DetectJump(){
 		if(Input.GetButtonDown(inputManager.jump)){
 			ChangeState(State.Jump);
+			soundManager.PlaySound("jump");
 		}
 	}
 
