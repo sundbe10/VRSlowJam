@@ -10,14 +10,19 @@ public class AttackBehavior : MonoBehaviour {
         NotAttacking
     }
 
-    private BoxCollider col;
+	private SphereCollider collider;
     //private AnimationState animationState;
 
-    State state = State.NotAttacking;
+    State state;
+	ApplyDamageBehavior applyDamageBehavior;
+	Animator animator;
 
     // Use this for initialization
     void Start () {
-        col = GameObject.Find("Sword").GetComponent<BoxCollider>();
+		collider = GetComponent<SphereCollider>();
+		applyDamageBehavior = GetComponent<ApplyDamageBehavior>();
+		animator = GetComponent<Animator>();
+		ChangeState(State.NotAttacking);
 	}
 	
 	// Update is called once per frame
@@ -31,25 +36,35 @@ public class AttackBehavior : MonoBehaviour {
         switch (state)
         {
             case State.Attacking:
-                attack();
+				Attack();
                 break;
             case State.NotAttacking:
-                stopAttack();
+                StopAttack();
                 break;
         }
     }
 
-    public void attack()
-    {
-        Debug.Log("attacking");
-        col.enabled = true;
-        return;
-    }
+	// Animation Event
+	public void UpdateAttackStatus(int status){
+		if(status == 1){
+			collider.enabled = true;
+			applyDamageBehavior.enabled = true;
+		}else{
+			collider.enabled = false;
+			applyDamageBehavior.enabled = false;
+		}
+	}
 
-    public void stopAttack()
+	void Attack()
     {
-        Debug.Log("not attacking");
-        col.enabled = false;
-        return;
+		animator.SetInteger("Attack",1);
+	}
+
+    void StopAttack()
+    {
+		animator.SetInteger("Attack",0);
+		collider.enabled = false;
+		applyDamageBehavior.enabled = false;
+		return;
     }
 }

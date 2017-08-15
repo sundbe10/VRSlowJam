@@ -25,8 +25,10 @@ public class TailWhipBehavior : MonoBehaviour {
 	void Update () {
 		if(rigidBody.velocity.magnitude > minTailVelocity){
 			applyDamageBehavior.enabled = true;
+			takeDamageBehavior.enabled = false;
 		}else{
-			applyDamageBehavior.enabled = false;
+			//applyDamageBehavior.enabled = false;
+			takeDamageBehavior.enabled = true;
 		}
 	}
 
