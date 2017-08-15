@@ -9,33 +9,30 @@ public class BlockBehavior : MonoBehaviour {
         Blocking,
         NotBlocking
     }
-    public int shieldStranght = 100;
-    //min shieldStrangth required to block again after shieldStrangth hits 0
-    public int breakLimit = 5;
-    //number of frames befor regaming 1 shieldStrangth
-    public int regenTime = 100;
+    public int shieldStranght = 40; 
+    public int breakLimit = 5;  //min shieldStrangth required to block again after shieldStrangth hits 0   
+    public int regenTime = 100; //number of frames befor regaming 1 shieldStrangth
+    public bool shieldBroken = false;
+
+    public HealthManager shield;
+    public State state = State.NotBlocking;
 
     private Rigidbody rb;
-    public HealthManager shield;
-    //private new TakeDamageBehavior damageShield;
+    private TakeDamageBehavior takeDamageBehavior;
+    private HealthManager knightHealth;
+    private Animator animator;
 
-    public State state = State.NotBlocking;
-    TakeDamageBehavior takeDamageBehavior;
-    HealthManager healthManager;
-    Animator animator;
-
-    int count = 0;
+    private int count = 0;
 
     // Use this for initialization
     void Start()
     {
-        
         rb = gameObject.GetComponent<Rigidbody>();
         takeDamageBehavior = gameObject.GetComponent<TakeDamageBehavior>();
-        healthManager = gameObject.GetComponent<HealthManager>();
+        knightHealth = gameObject.GetComponent<HealthManager>();
         animator = GetComponent<Animator>();
 
-        shield = new HealthManager();
+        shield = gameObject.AddComponent<HealthManager>();
         shield.maxHealth = shieldStranght;
     }
 
@@ -46,17 +43,23 @@ public class BlockBehavior : MonoBehaviour {
         {
             case State.Blocking:
                 shieldStranght = shield.currentHealth;
+                if(shield.currentHealth == 0)
+                {
+                    shieldBroken = true;
+                }
                 break;
             case State.NotBlocking:
                 count++;
+
                 if (count == regenTime)
                 {
                     shield.Heal(1);
                     count = 0;
                 }
-                if (shield.currentHealth >= breakLimit)
+                if (shield.currentHealth >= breakLimit || shieldBroken == false)
                 { 
                     shieldStranght = shield.currentHealth;
+                    shieldBroken = false;
                 }
                 break;
         }
@@ -78,20 +81,16 @@ public class BlockBehavior : MonoBehaviour {
 
     public void block()
     {
-        Debug.Log("blocking");
         //animator.SetInteger("Block",1);
         rb.isKinematic = true;
         takeDamageBehavior.healthManager = shield;
-        //damageShield.enabled = true;
         return;
     }
 
     public void stopBlocking()
     {
-        Debug.Log("not blocking");
-        rb.isKinematic = false;
-        takeDamageBehavior.healthManager = healthManager;
-        //damageShield.enabled = false;
+        rb.isKinematic = false;                             // these two lines are cousing throwing an error at start
+        takeDamageBehavior.healthManager = knightHealth;    // I really don't know why.
         return;
     }
 }

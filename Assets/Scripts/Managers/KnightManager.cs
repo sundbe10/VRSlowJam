@@ -127,7 +127,7 @@ public class KnightManager : MonoBehaviour {
     void detectBlock()
     {
         //simplifyed for testing: replace me!
-        if (Input.GetButton(inputManager.block) && blockBehavior.shieldStranght != 0)
+        if (Input.GetButton(inputManager.block) && !blockBehavior.shieldBroken)
         {
             ChangeState(State.Block);
         }
