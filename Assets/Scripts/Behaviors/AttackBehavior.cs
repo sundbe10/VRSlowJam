@@ -16,12 +16,14 @@ public class AttackBehavior : MonoBehaviour {
     State state;
 	ApplyDamageBehavior applyDamageBehavior;
 	Animator animator;
+	SoundManager soundManager;
 
     // Use this for initialization
     void Start () {
 		collider = GetComponent<SphereCollider>();
 		applyDamageBehavior = GetComponent<ApplyDamageBehavior>();
 		animator = GetComponent<Animator>();
+		soundManager = GetComponent<SoundManager>();
 		ChangeState(State.NotAttacking);
 	}
 	
@@ -49,6 +51,7 @@ public class AttackBehavior : MonoBehaviour {
 		if(status == 1){
 			collider.enabled = true;
 			applyDamageBehavior.enabled = true;
+			soundManager.PlaySound("sword_air");
 		}else{
 			collider.enabled = false;
 			applyDamageBehavior.enabled = false;
@@ -67,4 +70,5 @@ public class AttackBehavior : MonoBehaviour {
 		applyDamageBehavior.enabled = false;
 		return;
     }
+		
 }

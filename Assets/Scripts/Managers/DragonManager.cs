@@ -19,6 +19,8 @@ public class DragonManager : MonoBehaviour {
 	HealthManager headHealthManager;
 	FireBehavior fireBehavior;
 	StringBreakBehavior stringBreakBehavior;
+	TakeDamageBehavior[] takeDamageBehaviors;
+	SoundManager soundManager;
 
 	// Use this for initialization
 	void Start () {
@@ -26,6 +28,9 @@ public class DragonManager : MonoBehaviour {
 		headHealthManager = headHealthManagerObject.GetComponent<HealthManager>();
 		fireBehavior = GetComponent<FireBehavior>();
 		stringBreakBehavior = GetComponent<StringBreakBehavior>();
+		takeDamageBehaviors = GetComponentsInChildren<TakeDamageBehavior>();
+		soundManager = GetComponent<SoundManager>();
+		Debug.Log(takeDamageBehaviors.Length);
 	}
 	
 	// Update is called once per frame
@@ -68,7 +73,7 @@ public class DragonManager : MonoBehaviour {
 	void CheckBodyHealth(){
 		// If body health reaches zero, put the dragon in the prone state
 		if(bodyHealthManager.currentHealth <= 0){
-			Debug.Log("Prone");
+			soundManager.PlaySound("fall");
 			ChangeState(State.Prone);
 		}
 		// We can add hooks here for health bars or indicators
@@ -89,6 +94,7 @@ public class DragonManager : MonoBehaviour {
 
 	IEnumerator ProneToActiveTimeout(){
 		yield return new WaitForSeconds(proneTimeout);
+		soundManager.PlaySound("growl");
 		ChangeState(State.Active);
 	}
 }
