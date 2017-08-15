@@ -7,7 +7,7 @@ public class TakeDamageBehavior : MonoBehaviour {
 	public GameObject healthManagerObject;
 	public bool tookDamage = false;
 
-	HealthManager healthManager;
+	public HealthManager healthManager;
 	ParticleSystem particleSystem;
 
 	// Use this for initialization

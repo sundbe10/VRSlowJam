@@ -10,33 +10,56 @@ public class BlockBehavior : MonoBehaviour {
         NotBlocking
     }
     public int shieldStranght = 100;
+    //min shieldStrangth required to block again after shieldStrangth hits 0
+    public int breakLimit = 5;
+    //number of frames befor regaming 1 shieldStrangth
+    public int regenTime = 100;
 
     private Rigidbody rb;
+    public HealthManager shield;
+    //private new TakeDamageBehavior damageShield;
 
-    //private new HealthManager shield;
-    State state = State.NotBlocking;
+    public State state = State.NotBlocking;
     TakeDamageBehavior takeDamageBehavior;
+    HealthManager healthManager;
     Animator animator;
+
+    int count = 0;
 
     // Use this for initialization
     void Start()
     {
+        
         rb = gameObject.GetComponent<Rigidbody>();
         takeDamageBehavior = gameObject.GetComponent<TakeDamageBehavior>();
+        healthManager = gameObject.GetComponent<HealthManager>();
         animator = GetComponent<Animator>();
-        //shield.maxHealth = shieldStranght;
+
+        shield = new HealthManager();
+        shield.maxHealth = shieldStranght;
     }
 
     // Update is called once per frame
     void Update()
     {
-    //    switch (state)
-    //    {
-    //        case State.Blocking:
-    //            break;
-    //        case State.NotBlocking:
-    //            break;
-    //    }
+        switch (state)
+        {
+            case State.Blocking:
+                shieldStranght = shield.currentHealth;
+                break;
+            case State.NotBlocking:
+                count++;
+                if (count == regenTime)
+                {
+                    shield.Heal(1);
+                    count = 0;
+                }
+                if (shield.currentHealth >= breakLimit)
+                { 
+                    shieldStranght = shield.currentHealth;
+                }
+                break;
+        }
     }
 
     public void ChangeState(State newState)
@@ -56,9 +79,10 @@ public class BlockBehavior : MonoBehaviour {
     public void block()
     {
         Debug.Log("blocking");
-        animator.SetInteger("Block",1);
+        //animator.SetInteger("Block",1);
         rb.isKinematic = true;
-        takeDamageBehavior.enabled = false;
+        takeDamageBehavior.healthManager = shield;
+        //damageShield.enabled = true;
         return;
     }
 
@@ -66,7 +90,8 @@ public class BlockBehavior : MonoBehaviour {
     {
         Debug.Log("not blocking");
         rb.isKinematic = false;
-        takeDamageBehavior.enabled = true;
+        takeDamageBehavior.healthManager = healthManager;
+        //damageShield.enabled = false;
         return;
     }
 }
