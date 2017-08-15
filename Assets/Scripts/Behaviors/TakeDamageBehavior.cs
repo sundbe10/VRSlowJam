@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class TakeDamageBehavior : MonoBehaviour {
 
 	public GameObject healthManagerObject;
 	public bool tookDamage = false;
+	public string hitSoundIdentifier = "hit";
 
 	HealthManager healthManager;
 	ParticleSystem particleSystem;
+	SoundManager soundManager;
 
 	// Use this for initialization
 	void Start () {
 		healthManager = healthManagerObject.GetComponent<HealthManager>();
 		particleSystem = GetComponent<ParticleSystem>();
+		soundManager = GetComponent<SoundManager>();
 		if(healthManager == null){
 			Debug.LogError("Health manager was not found on gameObject!");
 		}
@@ -41,7 +45,7 @@ public class TakeDamageBehavior : MonoBehaviour {
 				if(particleSystem != null){
 					particleSystem.Emit(20);
 				}
-				Debug.Log("Damage");
+				soundManager.PlaySound(hitSoundIdentifier);
 				tookDamage = true;
             }
         }
