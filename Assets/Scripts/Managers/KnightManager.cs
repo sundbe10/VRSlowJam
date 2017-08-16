@@ -60,12 +60,12 @@ public class KnightManager : MonoBehaviour {
 				break;
 			case State.Active:
 				DetectAttack();
-                detectBlock();
+                DetectBlock();
 				DetectJump();
 				DetectDamage();
 				break;
 			case State.Block:
-                detectBlock();
+                DetectBlock();
 				break;
 			case State.Attack:
 				DetectDamage();
@@ -124,10 +124,10 @@ public class KnightManager : MonoBehaviour {
 		}
 	}
 
-    void detectBlock()
+    void DetectBlock()
     {
         //simplifyed for testing: replace me!
-        if (Input.GetButton(inputManager.block) && !blockBehavior.shieldBroken)
+		if (Input.GetButton(inputManager.block) && !blockBehavior.shieldBroken)
         {
             ChangeState(State.Block);
         }

@@ -28,7 +28,7 @@ public class SheildIndicatorManager : MonoBehaviour
         
         if (blockBehavior.state == BlockBehavior.State.Blocking)
         {
-            sheildHealth = blockBehavior.shield;
+            sheildHealth = blockBehavior.shieldHealth;
             spriteRenderer.enabled = true;
             //makes sprite always face camera
             transform.LookAt(camera.transform.position, -Vector3.up);
