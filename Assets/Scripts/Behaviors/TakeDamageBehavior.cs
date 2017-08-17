@@ -9,7 +9,7 @@ public class TakeDamageBehavior : MonoBehaviour {
 	public bool tookDamage = false;
 	public string hitSoundIdentifier = "hit";
 
-	HealthManager healthManager;
+	public HealthManager healthManager;
 	ParticleSystem particleSystem;
 	SoundManager soundManager;
 

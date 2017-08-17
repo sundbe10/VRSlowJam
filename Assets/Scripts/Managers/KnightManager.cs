@@ -21,7 +21,8 @@ public class KnightManager : MonoBehaviour {
 	State state = State.Idle;
 	MoveBehavior moveBehavior;
     AttackBehavior attackBehavior;
-	JumpBehavior jumpBehavior;
+    BlockBehavior blockBehavior;
+    JumpBehavior jumpBehavior;
 	TakeDamageBehavior takeDamageBehavior;
 	HealthManager healthManager;
 	KnightInputManager inputManager;
@@ -39,7 +40,8 @@ public class KnightManager : MonoBehaviour {
 		// Get Behaviors
 		moveBehavior = GetComponent<MoveBehavior>();
         attackBehavior = GetComponent<AttackBehavior>();
-		jumpBehavior = GetComponent<JumpBehavior>();
+        blockBehavior = GetComponent<BlockBehavior>();
+        jumpBehavior = GetComponent<JumpBehavior>();
 		takeDamageBehavior = GetComponent<TakeDamageBehavior>();
 	}
 
@@ -58,10 +60,12 @@ public class KnightManager : MonoBehaviour {
 				break;
 			case State.Active:
 				DetectAttack();
+                DetectBlock();
 				DetectJump();
 				DetectDamage();
 				break;
 			case State.Block:
+                DetectBlock();
 				break;
 			case State.Attack:
 				DetectDamage();
@@ -120,7 +124,20 @@ public class KnightManager : MonoBehaviour {
 		}
 	}
 
-	bool IsGrounded(){
+    void DetectBlock()
+    {
+        //simplifyed for testing: replace me!
+		if (Input.GetButton(inputManager.block) && !blockBehavior.shieldBroken)
+        {
+            ChangeState(State.Block);
+        }
+        else if (state == State.Block)
+        {
+            ChangeState(State.Active);
+        }
+    }
+
+        bool IsGrounded(){
 		float distanceToGround;
 		float threshold = 0.45f;
 		RaycastHit hit;
@@ -150,9 +167,11 @@ public class KnightManager : MonoBehaviour {
 	    case State.Active:
 		    moveBehavior.ChangeState(MoveBehavior.State.Grounded);
             attackBehavior.ChangeState(AttackBehavior.State.NotAttacking);
+            blockBehavior.ChangeState(BlockBehavior.State.NotBlocking);
 			jumpBehavior.ChangeState(JumpBehavior.State.Grounded);
             break;
         case State.Block:
+            blockBehavior.ChangeState(BlockBehavior.State.Blocking);
             moveBehavior.ChangeState(MoveBehavior.State.Idle);
             break;
         case State.Attack:
