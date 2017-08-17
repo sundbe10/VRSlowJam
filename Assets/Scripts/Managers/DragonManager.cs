@@ -31,6 +31,9 @@ public class DragonManager : MonoBehaviour {
 		takeDamageBehaviors = GetComponentsInChildren<TakeDamageBehavior>();
 		soundManager = GetComponent<SoundManager>();
 		Debug.Log(takeDamageBehaviors.Length);
+        foreach (string s in UnityEngine.Input.GetJoystickNames()){
+            Debug.Log(s);
+        }
 	}
 	
 	// Update is called once per frame
