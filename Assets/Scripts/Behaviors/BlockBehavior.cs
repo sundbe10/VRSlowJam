@@ -9,13 +9,14 @@ public class BlockBehavior : MonoBehaviour {
         Blocking,
         NotBlocking
     }
-    public int shieldStranght = 40; 
-    public int breakLimit = 5;  //min shieldStrangth required to block again after shieldStrangth hits 0   
-    public int regenTime = 100; //number of frames befor regaming 1 shieldStrangth
+    public int shieldStrength = 40; 
+    public int breakLimit = 5;  //min shieldStrength required to block again after shieldStrength hits 0   
+    public int regenTime = 100; //number of frames befor regaming 1 shieldStrength
     public bool shieldBroken = false;
 
-    public HealthManager shield;
+    public HealthManager shieldHealth;
     public State state = State.NotBlocking;
+	public GameObject shieldObject;
 
     private Rigidbody rb;
     private TakeDamageBehavior takeDamageBehavior;
@@ -25,15 +26,15 @@ public class BlockBehavior : MonoBehaviour {
     private int count = 0;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody>();
         takeDamageBehavior = gameObject.GetComponent<TakeDamageBehavior>();
         knightHealth = gameObject.GetComponent<HealthManager>();
         animator = GetComponent<Animator>();
 
-        shield = gameObject.AddComponent<HealthManager>();
-        shield.maxHealth = shieldStranght;
+        shieldHealth = gameObject.AddComponent<HealthManager>();
+        shieldHealth.maxHealth = shieldStrength;
     }
 
     // Update is called once per frame
@@ -41,27 +42,24 @@ public class BlockBehavior : MonoBehaviour {
     {
         switch (state)
         {
-            case State.Blocking:
-                shieldStranght = shield.currentHealth;
-                if(shield.currentHealth == 0)
-                {
-                    shieldBroken = true;
-                }
-                break;
-            case State.NotBlocking:
-                count++;
-
-                if (count == regenTime)
-                {
-                    shield.Heal(1);
-                    count = 0;
-                }
-                if (shield.currentHealth >= breakLimit || shieldBroken == false)
-                { 
-                    shieldStranght = shield.currentHealth;
-                    shieldBroken = false;
-                }
-                break;
+        case State.Blocking:
+            if(shieldHealth.currentHealth == 0)
+            {
+				BreakShield();
+            }
+            break;
+        case State.NotBlocking:
+            count++;
+            if (count == regenTime)
+            {
+                shieldHealth.Heal(1);
+                count = 0;
+            }
+            if (shieldHealth.currentHealth >= breakLimit && shieldBroken)
+            { 
+				HealShield();
+            }
+            break;
         }
     }
 
@@ -71,26 +69,39 @@ public class BlockBehavior : MonoBehaviour {
         switch (state)
         {
             case State.Blocking:
-                block();
+                Block();
                 break;
             case State.NotBlocking:
-                stopBlocking();
+                StopBlocking();
                 break;
         }
     }
 
-    public void block()
+    void Block()
     {
-        //animator.SetInteger("Block",1);
+		animator.SetBool("Block", true);
         rb.isKinematic = true;
-        takeDamageBehavior.healthManager = shield;
+        takeDamageBehavior.healthManager = shieldHealth;
         return;
     }
 
-    public void stopBlocking()
+    void StopBlocking()
     {
-        rb.isKinematic = false;                             // these two lines are cousing throwing an error at start
-        takeDamageBehavior.healthManager = knightHealth;    // I really don't know why.
+		animator.SetBool("Block", false);
+        rb.isKinematic = false;                            
+        takeDamageBehavior.healthManager = knightHealth;    
         return;
     }
+
+	void BreakShield(){
+		shieldBroken = true;
+		animator.SetTrigger("BlockBreakTrigger");
+		shieldObject.GetComponent<SkinnedMeshRenderer>().enabled = false;
+		ChangeState(State.Blocking);
+	}
+
+	void HealShield(){
+		shieldBroken = false;
+		shieldObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
+	}
 }
