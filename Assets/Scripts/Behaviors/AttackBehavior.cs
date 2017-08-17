@@ -51,6 +51,7 @@ public class AttackBehavior : MonoBehaviour {
 		if(status == 1){
 			collider.enabled = true;
 			applyDamageBehavior.enabled = true;
+			soundManager.PlaySound("sword");
 			soundManager.PlaySound("sword_air");
 		}else{
 			collider.enabled = false;

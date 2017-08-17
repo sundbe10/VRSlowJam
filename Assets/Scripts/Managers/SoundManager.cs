@@ -11,7 +11,7 @@ public class SoundManager : MonoBehaviour {
 	[System.Serializable]
 	public class Sound{
 		public string identifier;
-		public AudioClip audioClip;
+		public AudioClip[] audioClips;
 		public float volume = 1;
 	}
 
@@ -36,6 +36,6 @@ public class SoundManager : MonoBehaviour {
 			Debug.LogError("Could not play sound "+ identifier);
 			return;
 		}
-		audioSource.PlayOneShot(soundClip.audioClip, soundClip.volume);
+		audioSource.PlayOneShot(soundClip.audioClips[Random.Range(0,soundClip.audioClips.Length)], soundClip.volume);
 	}
 }
