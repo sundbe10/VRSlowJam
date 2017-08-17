@@ -25,7 +25,7 @@ public class JumpBehavior : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		switch(state){
 		case State.Grounded:
 			break;

@@ -21,12 +21,14 @@ public class FireBehavior : MonoBehaviour {
 	ParticleSystem fireParticleSystem;
 	ParticleSystem smokeParticleSystem;
 	DragonInputManager inputManager;
+	SoundManager soundManager;
 
 	// Use this for initialization
 	void Start () {
 		fireParticleSystem = fireObject.GetComponent<ParticleSystem>();
 		smokeParticleSystem = smokeObject.GetComponent<ParticleSystem>();
 		inputManager = GetComponent<DragonInputManager>();
+		soundManager = GetComponent<SoundManager>();
 		ChangeState(State.Active);
 	}
 
@@ -63,7 +65,7 @@ public class FireBehavior : MonoBehaviour {
 
 	IEnumerator FireTimeout(){
 		Debug.Log("launch");
-		InvokeRepeating("LaunchFlame", 0, 0.1f);
+		InvokeRepeating("LaunchFlame", 0, 0.2f);
 		yield return new WaitForSeconds(fireTime);
 		CancelInvoke();
 		ChangeState(State.Smoke);
@@ -76,6 +78,7 @@ public class FireBehavior : MonoBehaviour {
 
 	void LaunchFlame(){
 		var flame = Instantiate(flameObject, fireObject.transform.position, fireObject.transform.rotation);
+		soundManager.PlaySound("fire");
 	}
 
 }
