@@ -21,6 +21,8 @@ public class DragonManager : MonoBehaviour {
 	StringBreakBehavior stringBreakBehavior;
 	TakeDamageBehavior[] takeDamageBehaviors;
 	SoundManager soundManager;
+	TakeDamageBehavior[] damageBehaviors;
+	float previousHealth;
 
 	// Use this for initialization
 	void Start () {
@@ -30,10 +32,7 @@ public class DragonManager : MonoBehaviour {
 		stringBreakBehavior = GetComponent<StringBreakBehavior>();
 		takeDamageBehaviors = GetComponentsInChildren<TakeDamageBehavior>();
 		soundManager = GetComponent<SoundManager>();
-		Debug.Log(takeDamageBehaviors.Length);
-        foreach (string s in UnityEngine.Input.GetJoystickNames()){
-            Debug.Log(s);
-        }
+		float previousHealth = bodyHealthManager.currentHealth;
 	}
 	
 	// Update is called once per frame
@@ -41,9 +40,11 @@ public class DragonManager : MonoBehaviour {
 		switch(state){
 		case State.Active:
 			CheckBodyHealth();
+			DetectDamage(bodyHealthManager);
 			break;
 		case State.Prone:
 			CheckHeadHealth();
+			DetectDamage(headHealthManager);
 			break;
 		case State.Dead:
 			break;
@@ -54,7 +55,6 @@ public class DragonManager : MonoBehaviour {
 		state = newState;
 		switch(state){
 		case State.Active:
-			HealBody();
 			fireBehavior.ChangeState(FireBehavior.State.Active);
 			stringBreakBehavior.ChangeState(StringBreakBehavior.State.Active);
 			break;
@@ -90,6 +90,13 @@ public class DragonManager : MonoBehaviour {
 		// We can add hooks here for health bars or indicators
 	}
 
+	void DetectDamage(HealthManager healthManager){
+		if(previousHealth > healthManager.currentHealth){
+			soundManager.PlaySound("hit");
+		}
+		previousHealth = healthManager.currentHealth;
+	}
+
 	void HealBody(){
 		// Return dragon body to full health
 		bodyHealthManager.currentHealth = bodyHealthManager.maxHealth;
@@ -97,7 +104,9 @@ public class DragonManager : MonoBehaviour {
 
 	IEnumerator ProneToActiveTimeout(){
 		yield return new WaitForSeconds(proneTimeout);
-		soundManager.PlaySound("growl");
+		HealBody();
+		soundManager.PlaySound("explosion");
+		soundManager.PlaySound("rise");
 		ChangeState(State.Active);
 	}
 }
