@@ -6,7 +6,7 @@ public class KnightManager : MonoBehaviour {
 
 	public enum State
 	{
-		Idle,
+		Start,
 		Active,
         Block,
         Attack,
@@ -18,7 +18,7 @@ public class KnightManager : MonoBehaviour {
 
     Animator animator;
 
-	State state = State.Idle;
+	State state;
 	MoveBehavior moveBehavior;
     AttackBehavior attackBehavior;
     BlockBehavior blockBehavior;
@@ -47,7 +47,7 @@ public class KnightManager : MonoBehaviour {
 
 	void Start()
 	{
-       
+		ChangeState(State.Start);
 	}
 	
 	// Update is called once per frame
@@ -56,7 +56,7 @@ public class KnightManager : MonoBehaviour {
 		if(state != State.Dead){
 			switch(state)
 			{
-			case State.Idle:
+			case State.Start:
 				break;
 			case State.Active:
 				DetectAttack();
@@ -137,7 +137,7 @@ public class KnightManager : MonoBehaviour {
         }
     }
 
-        bool IsGrounded(){
+    bool IsGrounded(){
 		float distanceToGround;
 		float threshold = 0.45f;
 		RaycastHit hit;
@@ -162,7 +162,8 @@ public class KnightManager : MonoBehaviour {
 		state = newState;
 		switch(state)
 		{
-	    case State.Idle:
+	    case State.Start:
+			soundManager.PlaySound("start");
 		    break;
 	    case State.Active:
 		    moveBehavior.ChangeState(MoveBehavior.State.Grounded);

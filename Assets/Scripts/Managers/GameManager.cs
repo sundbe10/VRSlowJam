@@ -23,13 +23,21 @@ public class GameManager : MonoBehaviour {
 	void Start ()
 	{
 		// Send game start event
-		onGameStartEvent();
+		//onGameStartEvent();
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		
+		switch(state){
+		case State.Start:
+			if(Input.GetButtonDown("Submit")){
+				GameObject[] knights = GameObject.FindGameObjectsWithTag("Knight");
+				if(knights.Length > 0) onGameStartEvent();
+					
+			}
+			break;
+		}
 	}
 
 	void ChangeState(State newSate)

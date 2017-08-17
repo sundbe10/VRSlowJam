@@ -20,7 +20,7 @@ public class SoundManager : MonoBehaviour {
 	List<Sound> soundsList;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		audioSource = GetComponent<AudioSource>();
 		soundsList = sounds.ToList();
 	}
@@ -31,8 +31,9 @@ public class SoundManager : MonoBehaviour {
 	}
 
 	public void PlaySound(string identifier){
+		Debug.Log(soundsList[6]);
 		Sound soundClip = soundsList.Where(s => s.identifier == identifier).FirstOrDefault();
-		if(soundClip == null){
+		if(soundClip == null || soundClip.audioClips.Length == 0){
 			Debug.LogError("Could not play sound "+ identifier);
 			return;
 		}
