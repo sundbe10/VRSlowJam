@@ -11,7 +11,7 @@ public class SoundManager : MonoBehaviour {
 	[System.Serializable]
 	public class Sound{
 		public string identifier;
-		public AudioClip audioClip;
+		public AudioClip[] audioClips;
 		public float volume = 1;
 	}
 
@@ -20,7 +20,7 @@ public class SoundManager : MonoBehaviour {
 	List<Sound> soundsList;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		audioSource = GetComponent<AudioSource>();
 		soundsList = sounds.ToList();
 	}
@@ -32,10 +32,10 @@ public class SoundManager : MonoBehaviour {
 
 	public void PlaySound(string identifier){
 		Sound soundClip = soundsList.Where(s => s.identifier == identifier).FirstOrDefault();
-		if(soundClip == null){
+		if(soundClip == null || soundClip.audioClips.Length == 0){
 			Debug.LogError("Could not play sound "+ identifier);
 			return;
 		}
-		audioSource.PlayOneShot(soundClip.audioClip, soundClip.volume);
+		audioSource.PlayOneShot(soundClip.audioClips[Random.Range(0,soundClip.audioClips.Length)], soundClip.volume);
 	}
 }

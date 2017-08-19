@@ -29,15 +29,15 @@ public class FireBehavior : MonoBehaviour {
 		smokeParticleSystem = smokeObject.GetComponent<ParticleSystem>();
 		inputManager = GetComponent<DragonInputManager>();
 		soundManager = GetComponent<SoundManager>();
-		ChangeState(State.Active);
+		ChangeState(State.Idle);
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetButtonDown(inputManager.fire)){
-			if(state == State.Active){
-				ChangeState(State.Fire);
-			}
+		switch(state){
+		case State.Active:
+			BreathFire();
+			break;
 		}
 	}
 
@@ -60,6 +60,12 @@ public class FireBehavior : MonoBehaviour {
 			smokeParticleSystem.enableEmission = false;
 			StopAllCoroutines();
 			break;
+		}
+	}
+
+	void BreathFire(){
+		if(Input.GetButtonDown(inputManager.fire)){
+			ChangeState(State.Fire);
 		}
 	}
 

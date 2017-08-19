@@ -12,6 +12,10 @@ public class HealthManager : MonoBehaviour {
         currentHealth = maxHealth;
     }
 
+	public void SetBaseHealth(int health){
+		maxHealth = currentHealth = health;
+	}
+
     public void Damage(int amount)
     {
         currentHealth -= amount;

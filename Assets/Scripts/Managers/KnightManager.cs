@@ -6,7 +6,7 @@ public class KnightManager : MonoBehaviour {
 
 	public enum State
 	{
-		Idle,
+		Start,
 		Active,
         Block,
         Attack,
@@ -18,7 +18,7 @@ public class KnightManager : MonoBehaviour {
 
     Animator animator;
 
-	State state = State.Idle;
+	State state;
 	MoveBehavior moveBehavior;
     AttackBehavior attackBehavior;
     BlockBehavior blockBehavior;
@@ -28,10 +28,14 @@ public class KnightManager : MonoBehaviour {
 	KnightInputManager inputManager;
 	SoundManager soundManager;
 
+	public delegate void OnKnightEventDelegate (GameObject knight);
+	public static event OnKnightEventDelegate onKnightDie;
+
 	void Awake ()
 	{
 		// Add event subscription with callback
 		GameManager.onGameStartEvent += EnablePlayer;
+		GameManager.onKnightsWinEvent += Celebrate;
         animator = gameObject.GetComponent<Animator>();
 		healthManager = GetComponent<HealthManager>();
 		inputManager = GetComponent<KnightInputManager>();
@@ -43,11 +47,13 @@ public class KnightManager : MonoBehaviour {
         blockBehavior = GetComponent<BlockBehavior>();
         jumpBehavior = GetComponent<JumpBehavior>();
 		takeDamageBehavior = GetComponent<TakeDamageBehavior>();
+
+		//Invoke("Die", 5);
 	}
 
 	void Start()
 	{
-       
+		ChangeState(State.Start);
 	}
 	
 	// Update is called once per frame
@@ -56,7 +62,7 @@ public class KnightManager : MonoBehaviour {
 		if(state != State.Dead){
 			switch(state)
 			{
-			case State.Idle:
+			case State.Start:
 				break;
 			case State.Active:
 				DetectAttack();
@@ -81,7 +87,6 @@ public class KnightManager : MonoBehaviour {
 
 			if(healthManager.currentHealth <= 0){
 				ChangeState(State.Dead);
-				soundManager.PlaySound("die");
 			}
 		}
     }
@@ -137,7 +142,7 @@ public class KnightManager : MonoBehaviour {
         }
     }
 
-        bool IsGrounded(){
+    bool IsGrounded(){
 		float distanceToGround;
 		float threshold = 0.45f;
 		RaycastHit hit;
@@ -154,15 +159,24 @@ public class KnightManager : MonoBehaviour {
 	}
 
 	void Die(){
-		animator.SetTrigger("DeathTrigger");
+		animator.SetTrigger("DeathTrigger"); 
+		soundManager.PlaySound("die");
+		onKnightDie(gameObject);
+	}
+
+	void Celebrate(){
+		animator.SetTrigger("SpecialAttack1Trigger");
+		ChangeState(State.Celebrate);
 	}
 
 	void ChangeState(State newState)
 	{
 		state = newState;
+		if(state == State.Dead) return;
 		switch(state)
 		{
-	    case State.Idle:
+	    case State.Start:
+			soundManager.PlaySound("start");
 		    break;
 	    case State.Active:
 		    moveBehavior.ChangeState(MoveBehavior.State.Grounded);
@@ -187,13 +201,16 @@ public class KnightManager : MonoBehaviour {
 			attackBehavior.ChangeState(AttackBehavior.State.NotAttacking);
 			Hit();
 			break;
+		case State.Celebrate:
+			moveBehavior.ChangeState(MoveBehavior.State.Idle);
+			attackBehavior.ChangeState(AttackBehavior.State.NotAttacking);
+			jumpBehavior.ChangeState(JumpBehavior.State.Grounded);
+			break;
 	    case State.Dead: 
 		    moveBehavior.ChangeState(MoveBehavior.State.Idle);
 			attackBehavior.ChangeState(AttackBehavior.State.NotAttacking);
 			jumpBehavior.ChangeState(JumpBehavior.State.Grounded);
 			Die();
-		    break;
-	    case State.Celebrate: 
 		    break;
 		}
 	}
@@ -202,6 +219,7 @@ public class KnightManager : MonoBehaviour {
 	{
 		// Remove event subscription
 		GameManager.onGameStartEvent -= EnablePlayer;
+		GameManager.onKnightsWinEvent -= Celebrate;
 	}
 
 
