@@ -31,7 +31,6 @@ public class SoundManager : MonoBehaviour {
 	}
 
 	public void PlaySound(string identifier){
-		Debug.Log(soundsList[6]);
 		Sound soundClip = soundsList.Where(s => s.identifier == identifier).FirstOrDefault();
 		if(soundClip == null || soundClip.audioClips.Length == 0){
 			Debug.LogError("Could not play sound "+ identifier);

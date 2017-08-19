@@ -6,7 +6,8 @@ public class StringBreakBehavior : MonoBehaviour {
 
 	public enum State{
 		Active,
-		Broken
+		Broken,
+		Dead
 	}
 
 	public GameObject[] stringConnectionObjects;

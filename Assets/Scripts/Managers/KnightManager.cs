@@ -28,10 +28,14 @@ public class KnightManager : MonoBehaviour {
 	KnightInputManager inputManager;
 	SoundManager soundManager;
 
+	public delegate void OnKnightEventDelegate (GameObject knight);
+	public static event OnKnightEventDelegate onKnightDie;
+
 	void Awake ()
 	{
 		// Add event subscription with callback
 		GameManager.onGameStartEvent += EnablePlayer;
+		GameManager.onKnightsWinEvent += Celebrate;
         animator = gameObject.GetComponent<Animator>();
 		healthManager = GetComponent<HealthManager>();
 		inputManager = GetComponent<KnightInputManager>();
@@ -43,6 +47,8 @@ public class KnightManager : MonoBehaviour {
         blockBehavior = GetComponent<BlockBehavior>();
         jumpBehavior = GetComponent<JumpBehavior>();
 		takeDamageBehavior = GetComponent<TakeDamageBehavior>();
+
+		//Invoke("Die", 5);
 	}
 
 	void Start()
@@ -81,7 +87,6 @@ public class KnightManager : MonoBehaviour {
 
 			if(healthManager.currentHealth <= 0){
 				ChangeState(State.Dead);
-				soundManager.PlaySound("die");
 			}
 		}
     }
@@ -154,12 +159,20 @@ public class KnightManager : MonoBehaviour {
 	}
 
 	void Die(){
-		animator.SetTrigger("DeathTrigger");
+		animator.SetTrigger("DeathTrigger"); 
+		soundManager.PlaySound("die");
+		onKnightDie(gameObject);
+	}
+
+	void Celebrate(){
+		animator.SetTrigger("SpecialAttack1Trigger");
+		ChangeState(State.Celebrate);
 	}
 
 	void ChangeState(State newState)
 	{
 		state = newState;
+		if(state == State.Dead) return;
 		switch(state)
 		{
 	    case State.Start:
@@ -188,13 +201,16 @@ public class KnightManager : MonoBehaviour {
 			attackBehavior.ChangeState(AttackBehavior.State.NotAttacking);
 			Hit();
 			break;
+		case State.Celebrate:
+			moveBehavior.ChangeState(MoveBehavior.State.Idle);
+			attackBehavior.ChangeState(AttackBehavior.State.NotAttacking);
+			jumpBehavior.ChangeState(JumpBehavior.State.Grounded);
+			break;
 	    case State.Dead: 
 		    moveBehavior.ChangeState(MoveBehavior.State.Idle);
 			attackBehavior.ChangeState(AttackBehavior.State.NotAttacking);
 			jumpBehavior.ChangeState(JumpBehavior.State.Grounded);
 			Die();
-		    break;
-	    case State.Celebrate: 
 		    break;
 		}
 	}
@@ -203,6 +219,7 @@ public class KnightManager : MonoBehaviour {
 	{
 		// Remove event subscription
 		GameManager.onGameStartEvent -= EnablePlayer;
+		GameManager.onKnightsWinEvent -= Celebrate;
 	}
 
 

@@ -18,6 +18,9 @@ public class KnightSpawnBehavior : MonoBehaviour {
 	KnightInputManager inputManager;
 	GameObject spawnedKnight;
 
+	public delegate void OnKnightSpawnEventDelegate (GameObject knight);
+	public static event OnKnightSpawnEventDelegate onKnightAdded;
+	public static event OnKnightSpawnEventDelegate onKnightRemove;
 
 	// Use this for initialization
 	void Awake () {
@@ -56,11 +59,13 @@ public class KnightSpawnBehavior : MonoBehaviour {
 			light.color = playerColor;
 
 			ChangeState(State.Added);
+			onKnightAdded(spawnedKnight);
 		}
 	}
 
 	void RemoveKnight(){
 		if(Input.GetButtonDown(inputManager.block)){
+			onKnightRemove(spawnedKnight);
 			Destroy(spawnedKnight);
 			ChangeState(State.Active);
 		}
