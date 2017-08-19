@@ -33,9 +33,11 @@ public class TailWhipBehavior : MonoBehaviour {
 	}
 
 	void OnDrawGizmos(){
-		if(rigidBody.velocity.magnitude > minTailVelocity){
-			Gizmos.color = Color.red;
-			Gizmos.DrawSphere(transform.position, 1);
+		if(rigidBody){
+			if(rigidBody.velocity.magnitude > minTailVelocity){
+				Gizmos.color = Color.red;
+				Gizmos.DrawSphere(transform.position, 1);
+			}
 		}
 	}
 }

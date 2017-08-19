@@ -5,6 +5,7 @@ using UnityEngine;
 public class DragonManager : MonoBehaviour {
 
 	public enum State{
+		Idle,
 		Active,
 		Prone,
 		Dead
@@ -13,7 +14,9 @@ public class DragonManager : MonoBehaviour {
 	public GameObject bodyHealthManagerObject;
 	public GameObject headHealthManagerObject;
 	public float proneTimeout; // Time between when dragon becomes prone and then active again
-	public State state  = State.Active;
+	public State state  = State.Idle;
+	public float twitchForce = 100;
+	public int baseHealthPerPlayer = 30;
 
 	HealthManager bodyHealthManager;
 	HealthManager headHealthManager;
@@ -22,22 +25,36 @@ public class DragonManager : MonoBehaviour {
 	TakeDamageBehavior[] takeDamageBehaviors;
 	SoundManager soundManager;
 	TakeDamageBehavior[] damageBehaviors;
+	Rigidbody rigidBody;
 	float previousHealth;
+
+	public delegate void OnDragonEventDelegate ();
+	public static event OnDragonEventDelegate onDragonDie;
 
 	// Use this for initialization
 	void Start () {
+		GameManager.onGameStartEvent += EnableDragon;
+		GameManager.onDragonWinEvent += Celebrate;
+		GameManager.onKnightsSetEvent += SetHealth;
+
 		bodyHealthManager = bodyHealthManagerObject.GetComponent<HealthManager>();
 		headHealthManager = headHealthManagerObject.GetComponent<HealthManager>();
 		fireBehavior = GetComponent<FireBehavior>();
 		stringBreakBehavior = GetComponent<StringBreakBehavior>();
 		takeDamageBehaviors = GetComponentsInChildren<TakeDamageBehavior>();
 		soundManager = GetComponent<SoundManager>();
+		rigidBody = transform.Find("Body").GetComponent<Rigidbody>();
 		float previousHealth = bodyHealthManager.currentHealth;
+
+		//ChangeState(State.Prone);
+		//Invoke("Die", 2);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		switch(state){
+		case State.Idle:
+			break;
 		case State.Active:
 			CheckBodyHealth();
 			DetectDamage(bodyHealthManager);
@@ -54,6 +71,8 @@ public class DragonManager : MonoBehaviour {
 	void ChangeState(State newState){
 		state = newState;
 		switch(state){
+		case State.Idle:
+			break;
 		case State.Active:
 			fireBehavior.ChangeState(FireBehavior.State.Active);
 			stringBreakBehavior.ChangeState(StringBreakBehavior.State.Active);
@@ -65,10 +84,9 @@ public class DragonManager : MonoBehaviour {
 			// Hit and fall Animation
 			break;
 		case State.Dead:
-			StopAllCoroutines();
 			fireBehavior.ChangeState(FireBehavior.State.Idle);
-			stringBreakBehavior.ChangeState(StringBreakBehavior.State.Broken);
-			// End Game
+			stringBreakBehavior.ChangeState(StringBreakBehavior.State.Dead);
+			Die();
 			break;
 		}
 	}
@@ -93,6 +111,7 @@ public class DragonManager : MonoBehaviour {
 	void DetectDamage(HealthManager healthManager){
 		if(previousHealth > healthManager.currentHealth){
 			soundManager.PlaySound("hit");
+			rigidBody.AddForce(Vector3.up * twitchForce);
 		}
 		previousHealth = healthManager.currentHealth;
 	}
@@ -102,11 +121,46 @@ public class DragonManager : MonoBehaviour {
 		bodyHealthManager.currentHealth = bodyHealthManager.maxHealth;
 	}
 
+	void Die(){
+		soundManager.PlaySound("explosion");
+		soundManager.PlaySound("fall");
+		rigidBody.AddForce(Vector3.up * twitchForce * 3);
+		StopAllCoroutines();
+		onDragonDie();
+	}
+
+	void Celebrate ()
+	{
+		ChangeState(State.Active);
+		Debug.Log("celebrate");
+		StartCoroutine("DelayedCelebrate");
+	}
+
+	void EnableDragon(){
+		ChangeState(State.Active);
+	}
+
+	void SetHealth(int numPlayers){
+		// headHealthManager.SetBaseHealth(baseHealthPerPlayer * numPlayers);
+		bodyHealthManager.SetBaseHealth(baseHealthPerPlayer * numPlayers);
+	}
+
 	IEnumerator ProneToActiveTimeout(){
 		yield return new WaitForSeconds(proneTimeout);
 		HealBody();
 		soundManager.PlaySound("explosion");
 		soundManager.PlaySound("rise");
 		ChangeState(State.Active);
+	}
+
+	IEnumerator DelayedCelebrate(){
+		yield return new WaitForSeconds(1);
+		soundManager.PlaySound("taunt");
+	}
+
+	void OnDestroy(){
+		GameManager.onGameStartEvent -= EnableDragon;
+		GameManager.onDragonWinEvent -= Celebrate;
+		GameManager.onKnightsSetEvent -= SetHealth;
 	}
 }
