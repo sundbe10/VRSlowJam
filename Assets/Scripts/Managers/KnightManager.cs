@@ -171,8 +171,9 @@ public class KnightManager : MonoBehaviour {
 
 	void ChangeState(State newState)
 	{
-		state = newState;
-		if(state == State.Dead) return;
+        if (state == State.Dead) return;
+        state = newState;
+        Debug.Log(state);
 		switch(state)
 		{
 	    case State.Start:
