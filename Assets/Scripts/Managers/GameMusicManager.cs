@@ -39,7 +39,9 @@ public class GameMusicManager : MonoBehaviour {
 
 	void PlayMusic(AudioClip audioClip){
 		audioSource.clip = audioClip;
-	}
+        audioSource.Play();
+        Debug.Log(audioClip.name);
+    }
 
 	void OnDestroy(){
 		GameManager.onDragonWinEvent -= PlayDragonMusic;
