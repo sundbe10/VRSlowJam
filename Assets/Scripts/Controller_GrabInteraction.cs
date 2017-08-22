@@ -6,6 +6,7 @@ using UnityEngine;
 public class Controller_GrabInteraction : MonoBehaviour {
 
 	public Rigidbody attachPoint;
+	public FireBehavior FireBehavior;
 
 	SteamVR_TrackedObject trackedObj;
 	FixedJoint joint;
@@ -65,7 +66,7 @@ public class Controller_GrabInteraction : MonoBehaviour {
 				currentlyHolding = true;
 			}
 		}
-		else if (currentlyHolding && device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))
+		else if (currentlyHolding && device.GetPressDown (SteamVR_Controller.ButtonMask.Grip))
 		{
 			InteractableObj intObjScript = interObj.GetComponentInParent<InteractableObj> ();
 			var rgbd = interObj.GetComponent<Rigidbody>();
@@ -103,9 +104,17 @@ public class Controller_GrabInteraction : MonoBehaviour {
 				interObj.transform.rotation = oldRotation;
 			}
 		}
+		else if (currentlyHolding && (device.GetPressDown (SteamVR_Controller.ButtonMask.Trigger) || device.GetPressDown (SteamVR_Controller.ButtonMask.Touchpad)) )
+		{
+			onButtonPress ();
+		}
 
 	}
 
+	void onButtonPress(){
+		//Debug.Log ("Button was pressed while hoding something");
+		FireBehavior.BreathFire ();
+	}
 
 	void OnTriggerEnter(Collider collider){
 		//Debug.Log ("I hit something");
