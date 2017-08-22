@@ -26,11 +26,11 @@ public class GameMusicManager : MonoBehaviour {
 	}
 
 	void PlayDragonMusic(){
-		PlayMusic(dragonMusic);
+        PlayMusic(dragonMusic);
 	}
 
 	void PlayKnightsMusic(){
-		PlayMusic(knightMusic);
+        PlayMusic(knightMusic);
 	}
 
 	void PlayBattleMusic(){
@@ -38,20 +38,17 @@ public class GameMusicManager : MonoBehaviour {
 	}
 
 	void PlayMusic(AudioClip audioClip){
-        FadeOut(audioSource);
 		audioSource.clip = audioClip;
         FadeIn(audioSource);
-        //audioSource.Play();
-        Debug.Log(audioClip.name);
     }
 
     void FadeOut(AudioSource audioSource)
     {
-        StartCoroutine(AudioFadeOut.FadeOut(audioSource, 0.3f));
+        StartCoroutine(AudioFadeOut.FadeOut(audioSource, 0.7f));
     }
     void FadeIn(AudioSource audioSource)
     {
-        StartCoroutine(AudioFadeOut.FadeIn(audioSource, 1f));
+        StartCoroutine(AudioFadeOut.FadeIn(audioSource, 3f));
     }
 	void OnDestroy(){
 		GameManager.onDragonWinEvent -= PlayDragonMusic;

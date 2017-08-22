@@ -34,11 +34,11 @@ public class FireBehavior : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		switch(state){
+		/*switch(state){
 		case State.Active:
 			BreathFire();
 			break;
-		}
+		}*/
 	}
 
 	public void ChangeState(State newState){
@@ -63,9 +63,14 @@ public class FireBehavior : MonoBehaviour {
 		}
 	}
 
-	void BreathFire(){
-		if(Input.GetButtonDown(inputManager.fire)){
+	public void BreathFire(){
+		Debug.Log ("Got BreathFire Command");
+		Debug.Log ("State = "+state);
+		/*if(Input.GetButtonDown(inputManager.fire)){
 			ChangeState(State.Fire);
+		}*/
+		if (state == State.Active){
+			ChangeState (State.Fire);
 		}
 	}
 
