@@ -1,0 +1,157 @@
+fileFormatVersion: 2
+guid: 75cbb0b6680a28240963736c5cdd5707
+timeCreated: 1503368511
+licenseType: Free
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: Chest
+    100002: Dragon_v02
+    100004: //RootNode
+    100006: Head
+    100008: LAnkle
+    100010: LHip
+    100012: LKnee
+    100014: LKnee2
+    100016: LowerJaw
+    100018: LWing1
+    100020: LWing2
+    100022: LWing3
+    100024: LWing4
+    100026: LWing5
+    100028: LWingRoot
+    100030: Neck2
+    100032: Neck3
+    100034: Nexk1
+    100036: RAnkle
+    100038: RHip
+    100040: RKnee
+    100042: RKnee2
+    100044: RWing1
+    100046: RWing2
+    100048: RWing3
+    100050: RWing4
+    100052: RWing5
+    100054: RWingRoot
+    100056: Tail1
+    100058: Tail2
+    100060: Tail3
+    100062: TailTip
+    100064: UpperJaw
+    100066: Waist
+    100068: Dragon_v03
+    400000: Chest
+    400002: Dragon_v02
+    400004: //RootNode
+    400006: Head
+    400008: LAnkle
+    400010: LHip
+    400012: LKnee
+    400014: LKnee2
+    400016: LowerJaw
+    400018: LWing1
+    400020: LWing2
+    400022: LWing3
+    400024: LWing4
+    400026: LWing5
+    400028: LWingRoot
+    400030: Neck2
+    400032: Neck3
+    400034: Nexk1
+    400036: RAnkle
+    400038: RHip
+    400040: RKnee
+    400042: RKnee2
+    400044: RWing1
+    400046: RWing2
+    400048: RWing3
+    400050: RWing4
+    400052: RWing5
+    400054: RWingRoot
+    400056: Tail1
+    400058: Tail2
+    400060: Tail3
+    400062: TailTip
+    400064: UpperJaw
+    400066: Waist
+    400068: Dragon_v03
+    4300000: Dragon_v02
+    4300002: Dragon_v03
+    9500000: //RootNode
+    13700000: Dragon_v02
+    13700002: Dragon_v03
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 0
+    normalImportMode: 0
+    tangentImportMode: 0
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

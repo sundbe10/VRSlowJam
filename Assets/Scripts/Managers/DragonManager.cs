@@ -13,6 +13,7 @@ public class DragonManager : MonoBehaviour {
 
 	public GameObject bodyHealthManagerObject;
 	public GameObject headHealthManagerObject;
+	public Rigidbody bodyRigidbody;
 	public float proneTimeout; // Time between when dragon becomes prone and then active again
 	public State state  = State.Idle;
 	public float twitchForce = 100;
@@ -43,7 +44,7 @@ public class DragonManager : MonoBehaviour {
 		stringBreakBehavior = GetComponent<StringBreakBehavior>();
 		takeDamageBehaviors = GetComponentsInChildren<TakeDamageBehavior>();
 		soundManager = GetComponent<SoundManager>();
-		rigidBody = transform.Find("Body").GetComponent<Rigidbody>();
+		rigidBody = bodyRigidbody;
 		float previousHealth = bodyHealthManager.currentHealth;
 
 		//ChangeState(State.Prone);
