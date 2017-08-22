@@ -26,21 +26,30 @@ public class GameMusicManager : MonoBehaviour {
 	}
 
 	void PlayDragonMusic(){
-		PlayMusic(dragonMusic);
+        PlayMusic(dragonMusic);
 	}
 
 	void PlayKnightsMusic(){
-		PlayMusic(knightMusic);
+        PlayMusic(knightMusic);
 	}
 
 	void PlayBattleMusic(){
-		PlayMusic(battleMusic);
+        PlayMusic(battleMusic);
 	}
 
 	void PlayMusic(AudioClip audioClip){
 		audioSource.clip = audioClip;
-	}
+        FadeIn(audioSource);
+    }
 
+    void FadeOut(AudioSource audioSource)
+    {
+        StartCoroutine(AudioFadeOut.FadeOut(audioSource, 0.7f));
+    }
+    void FadeIn(AudioSource audioSource)
+    {
+        StartCoroutine(AudioFadeOut.FadeIn(audioSource, 3f));
+    }
 	void OnDestroy(){
 		GameManager.onDragonWinEvent -= PlayDragonMusic;
 		GameManager.onKnightsWinEvent -= PlayKnightsMusic;
